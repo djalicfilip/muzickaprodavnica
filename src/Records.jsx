@@ -3,12 +3,17 @@ import OneRecord from './OneRecord'
 
 
 
-const Records = ({products})=> {
+const Records = ({products, onAdd, onRemove })=> {
   return (
     <div className='all-products'>
-      <OneRecord product={products[0]}/>
-      <OneRecord product={products[1]}/>
-      <OneRecord product={products[2]}/>
+  {products.map((product)=>(
+    <OneRecord 
+    key={product.id}
+    product={product} 
+    onAdd={onAdd}
+    onRemove={onRemove}
+    />
+  ))}
 
     </div>
   )
