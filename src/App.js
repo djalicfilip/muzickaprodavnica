@@ -1,90 +1,120 @@
-import './App.css';
-import NavBar from './Navbar';
-import Records from './Records';
+import "./App.css";
+import MenuBar from "./components/MenuBar";
+import Shop from "./components/Shop";
+import Cart from "./components/Cart";
 import { useState } from "react";
-import Cart from './Cart';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Footer from "./components/Footer/Footer";
 
 function App() {
-
+  const [cartNum, setCartNum] = useState(0);
   const [cartProducts, setCartProducts] = useState([]);
-  const refreshCart = () => {
-    const newProducts = products.filter((product) => product.amount > 0);
-    setCartProducts(newProducts);
-  };
-
-
-  const addToCart = (id) => {
-    products.map((product) => {
-      if (product.id === id) {
-        product.amount = product.amount + 1;
-        const a = cartNum + 1;
-        setCartNum(a);
-        refreshCart();
-        console.log("product id=", product.id, "amount=", product.amount);
-      }
-    });
-  };
-  const remFromCart = (id) => {
-    products.map((product) => {
-      if (product.id === id) {
-        if (product.amount > 0) {
-          product.amount = product.amount - 1;
-          const a = cartNum - 1;
-        setCartNum(a);
-        refreshCart();
-          console.log("product id=", product.id, "amount=", product.amount);
-        } else {
-          alert("Amount of product is already 0.");
-        }
-      }
-    });
-  };
-
-  
-
- 
-
-  const [products, setProducts] = useState ( [
+  const [products, setProducts] = useState([
     {
       id: 1,
-      title: "Midnights",
+      title: "Renaissance",
+      url: "https://upload.wikimedia.org/wikipedia/en/a/ad/Beyonc%C3%A9_-_Renaissance.png",
       description:
-        "Midnights is the tenth studio album by American singer-songwriter Taylor Swift, released on October 21, 2022, via Republic Records.",
+        "Renaissance (also titled Act I: Renaissance) is the seventh studio album by American singer Beyoncé, released on July 29, 2022, by Parkwood Entertainment and Columbia Records.",
+      price: 55,
       amount: 0,
-      pic:"https://upload.wikimedia.org/wikipedia/en/9/9f/Midnights_-_Taylor_Swift.png"
     },
     {
       id: 2,
-      title: "Dawn Fm",
+      title: "Harry's House",
+      url: "https://upload.wikimedia.org/wikipedia/en/d/d5/Harry_Styles_-_Harry%27s_House.png",
       description:
-        "Dawn FM is the fifth studio album by Canadian singer-songwriter the Weeknd. It was released on January 7, 2022, through XO and Republic Records.",
+        "Harry's House is the third studio album by English singer and songwriter Harry Styles, released on 20 May 2022 by Columbia Records and Erskine.",
+      price: 45,
       amount: 0,
-      pic:"https://upload.wikimedia.org/wikipedia/en/b/b9/The_Weeknd_-_Dawn_FM.png"
     },
     {
       id: 3,
-      title: "Renaissance ",
+      title: "Midnights",
+      url: "https://upload.wikimedia.org/wikipedia/en/9/9f/Midnights_-_Taylor_Swift.png",
       description:
-        "Renaissance (also titled Act I: Renaissance) is the seventh studio album by American singer Beyoncé, released on July 29, 2022, by Parkwood Entertainment and Columbia Records. ",
+        "Midnights is the tenth studio album by American singer-songwriter Taylor Swift, released on October 21, 2022, via Republic Records",
+      price: 40,
       amount: 0,
-      pic:"https://static.spin.com/files/2022/07/61yO73-xTcL._SL1500_-1024x1024.jpg"
     },
+    {
+      id: 4,
+      title: "Dawn FM",
+      url: "https://upload.wikimedia.org/wikipedia/en/b/b9/The_Weeknd_-_Dawn_FM.png",
+      description:
+        "Dawn FM is the fifth studio album by Canadian singer-songwriter the Weeknd. It was released on January 7, 2022, through XO and Republic Records.",
+      price: 32,
+      amount: 0,
+    },
+    {
+      id: 5,
+      title: "30",
+      url: "https://upload.wikimedia.org/wikipedia/en/7/76/Adele_-_30.png",
+      description:
+        "30 is the fourth studio album by English singer-songwriter Adele. It was released on 19 November 2021 by Columbia Records, as Adele's first studio album since 25 (2015).",
+      price: 43,
+      amount: 0,
+    }
+  
   ]);
 
-  const [cartNum, setCartNum] = useState(0);
-
+  function refreshCart() {
+    let newProducts = products.filter((prod) => prod.amount > 0);
+    setCartProducts(newProducts);
+  }
+  function addProduct(title, id) {
+    setCartNum(cartNum + 1);
+    products.forEach((prod) => {
+      if (prod.id === id) {
+        prod.amount++;
+      }
+    });
+    refreshCart();
+  }
+  function removeProduct(title, id) {
+    products.forEach((prod) => {
+      if (prod.id === id) {
+        if (prod.amount > 0) {
+          prod.amount--;
+          setCartNum(cartNum - 1);
+        }
+      }
+    });
+    refreshCart();
+  }
 
   return (
-<BrowserRouter>
-<NavBar cartNum={cartNum}  />
-<Routes>
-  <Route path='/' element={
-<Records products={products} onAdd={addToCart} onRemove={remFromCart} />
-} />
-<Route path="/cart" element={<Cart cartProducts={cartProducts} />} />
-</Routes>
-</BrowserRouter>
+    <BrowserRouter className="App">
+      <Routes>
+        <Route
+          path="/shop"
+          element={
+            <>
+              <MenuBar cartNum={cartNum} isHome={0} isShop={1} />,
+              <Shop
+                products={products}
+                onAdd={addProduct}
+                onRemove={removeProduct}
+              />
+              <Footer />
+            </>
+          }
+        />
+        <Route path="/" element={<MenuBar cartNum={cartNum} isHome={1} />} />
+        <Route
+          path="/cart"
+          element={
+            <>
+              <MenuBar cartNum={cartNum} isHome={0} />,
+              <Cart products={cartProducts} onRemove={removeProduct} />
+              <Footer />
+            </>
+          }
+         
+        />
+      
+      </Routes>
+    </BrowserRouter>
   );
 }
 
