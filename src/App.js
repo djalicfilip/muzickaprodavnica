@@ -2,14 +2,25 @@ import './App.css';
 import NavBar from './Navbar';
 import Records from './Records';
 import { useState } from "react";
+import Cart from './Cart';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
+
+  const [cartProducts, setCartProducts] = useState([]);
+  const refreshCart = () => {
+    const newProducts = products.filter((product) => product.amount > 0);
+    setCartProducts(newProducts);
+  };
+
+
   const addToCart = (id) => {
     products.map((product) => {
       if (product.id === id) {
         product.amount = product.amount + 1;
         const a = cartNum + 1;
         setCartNum(a);
+        refreshCart();
         console.log("product id=", product.id, "amount=", product.amount);
       }
     });
@@ -21,6 +32,7 @@ function App() {
           product.amount = product.amount - 1;
           const a = cartNum - 1;
         setCartNum(a);
+        refreshCart();
           console.log("product id=", product.id, "amount=", product.amount);
         } else {
           alert("Amount of product is already 0.");
@@ -31,7 +43,7 @@ function App() {
 
   
 
-
+ 
 
   const [products, setProducts] = useState ( [
     {
@@ -64,10 +76,15 @@ function App() {
 
 
   return (
-  <div className='App'>
+<BrowserRouter>
 <NavBar cartNum={cartNum}  />
+<Routes>
+  <Route path='/' element={
 <Records products={products} onAdd={addToCart} onRemove={remFromCart} />
-</div>
+} />
+<Route path="/cart" element={<Cart cartProducts={cartProducts} />} />
+</Routes>
+</BrowserRouter>
   );
 }
 
